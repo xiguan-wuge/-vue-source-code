@@ -1,8 +1,11 @@
 import {arrayMethods} from './array'
+import Dep from './dep'
 
 class Observer {
   
   constructor(value) {
+    this.value = value
+    this.dep = new Dep()
     // 观测值
     if(Array.isArray(value)) {
       // 优化数组监测
@@ -39,11 +42,32 @@ class Observer {
 
 // Object.defineProperty 进行数据劫持的核心逻辑
 function defineReactive(data, key, val) {
-  observe(val) // 递归 监测数据
+  const childObj = observe(val) // 递归 监测数据
   // 问题： 若data数据层级过深， 影响性能
+
+
+  const dep = new Dep() // 每个属性 实例化一个dep
 
   Object.defineProperty(data, key, {
     get() {
+      // 页面取值时，可以把watcher收集到dep里面 -- 依赖收集
+      if(Dep.target) {
+        // 收集数据
+        dep.depend()
+        // 若子元素仍然是个对象，进一步收集依赖
+        if(childObj) {
+          // 比如{a: [1, 2, 3]}, 
+
+          // ? childObj.dep, dep什么时候绑定到childObj。 
+          // 答：后面查看完整代码时，发现在初始化Observer实例时挂载dep
+          childObj.dep.depend() 
+
+          // 处理数组多层嵌套的情况
+          if(Array.isArray(val)) {
+            dependArray(val)
+          }
+        }
+      }
       console.log(`获取值 ${key}:${val}`)
       return val
     },
@@ -51,6 +75,9 @@ function defineReactive(data, key, val) {
       if(newVal !== val) {
         console.log(`设置值 ${key}:${newVal}`)
         val = newVal
+
+        // 通知渲染watcher更新 -- 派发更新
+        dep.notify()
       }
     }
   })
@@ -63,4 +90,16 @@ export function observe(data) {
     return;
   }
   return new Observer(data);
+}
+// 递归收集数组依赖
+function dependArray(value) {
+  for(let i = 0; i < value.length; i++) {
+    const e = value[i]
+    // __ob__ : observer 实例
+    e && e.__ob__ && e.__ob__.dep.depend()
+    // 是数组，进一步递归收集
+    if(Array.isArray(e)) {
+      dependArray(e)
+    }
+  }
 }

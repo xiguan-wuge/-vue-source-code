@@ -36,6 +36,8 @@ methodsToPatch.forEach(method => {
     }
 
     if(inserted) ob.observeArray(inserted) // 进一步监听新增数据
+    // 数组派发更新
+    ob.dep.notify()
 
     return result
   }
