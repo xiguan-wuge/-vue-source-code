@@ -5,12 +5,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VueSourceCode2</title>
+  <style>
+    .font-red {
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <div class="title">这是Vue源码demo</div>
   <div id="app"></div>
   <script src="/dist/vue.js"></script>
-
+  
   <script>
     const vm = new Vue({
       el: '#app',
@@ -24,19 +29,19 @@
           arr: ['1', '2']
         }
       },
-      template: `<div id="a">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
+      template: `<div id="a" class="font-red">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
     })
     console.log('vm', vm)
-    setTimeout(() => {
-      console.log('2000', vm.a)
-      vm.arr.push('3')
-    }, 2000)
-    setTimeout(() => {
-      vm.a = 11
-      vm.obj.name = 'lisi'
-      vm.arr.reverse()
-      console.log('5000')
-    }, 5000)
+    // setTimeout(() => {
+    //   console.log('2000', vm.a)
+    //   vm.arr.push('3')
+    // }, 2000)
+    // setTimeout(() => {
+    //   vm.a = 11
+    //   vm.obj.name = 'lisi'
+    //   vm.arr.reverse()
+    //   console.log('5000')
+    // }, 5000)
   </script>
   
 </body>

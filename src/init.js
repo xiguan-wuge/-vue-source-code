@@ -37,5 +37,8 @@ export function initMixins(Vue){
         options.render = render
       }
     }
+
+    // 将当前组件实例挂在到真实的el节点上
+    return mountComponent(vm, el)
   }
 }

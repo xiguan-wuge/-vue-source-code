@@ -20,15 +20,15 @@ function gen(node) {
     let match, index
 
     while((match = defaultTagRE.exec(text))) {
-      // index =》 匹配到的位置
+      // index =》 匹配到花括号的位置
       index = match.index
       if(index > lastIndex) {
         tokens.push(JSON.stringify(text.slice(lastIndex, index)))
       }
       // 放入捕获到的变量内容
       tokens.push(`_s(${match[1].trim()})`)
-      // 匹配指针后移 
-      index = index + match[0].length
+      // 当前轮匹配结束指针后移，即下一轮的起始位置 
+      lastIndex = index + match[0].length
     }
 
     // 若匹配完了花括号，text中海油剩余的普通文本，则继续push
@@ -55,7 +55,9 @@ function genProps(attrs) {
       })
       attr.value = obj
     }
+    str += `${attr.name}:${JSON.stringify(attr.value)},`
   }
+  return `{${str.slice(0, -1)}}`
 }
 
 // 生成子节点，调用gen函数递归创建
@@ -78,7 +80,7 @@ function getChildren(el) {
 export function generate(el) {
   const children = getChildren(el)
   const code = `_c('${el.tag}',${
-    el.attrs.lenth ? `${genProps(el.attrs)}` : 'undefined'
+    el.attrs.length ? `${genProps(el.attrs)}` : 'undefined'
   }${children ? `,${children}` : ''})`
   
   return code
