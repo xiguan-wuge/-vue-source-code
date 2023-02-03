@@ -14,7 +14,15 @@ export function mountComponent(vm, el) {
     console.log('刷新页面')
     vm._update(vm._render())
   }
-  new Watcher(vm, updateComponent, null, true)
+  callHook(vm, 'beforeMount')
+  new Watcher(
+    vm, 
+    updateComponent, 
+    () => {
+      callHook(vm, 'beforeUpdate')
+    }, 
+    true)
+  callHook(vm, 'mounted')
 }
 
 export function lifecycleMixin(Vue) {
@@ -34,5 +42,17 @@ export function lifecycleMixin(Vue) {
       patch(prevNode, vnode)
     }
     
+  }
+}
+
+
+export function callHook(vm, hook) {
+  // 依次执行生命周期对应的方法
+  const handlers = vm.$options[hook]
+  if(handlers) {
+    for(let i = 0, len = handlers.length; i < len; i++) {
+      // 声明周期里的 this 指向当前实例
+      handlers[i].call(vm) 
+    }
   }
 }

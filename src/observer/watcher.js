@@ -13,6 +13,8 @@ export default class Watcher {
     this.deps = [] // 存放dep容器
     this.depsId = new Set() // 去重dep
 
+    this.user = options.user
+
     if(typeof exprOrFn === 'function') {
       this.getter = exprOrFn
     }
@@ -47,5 +49,12 @@ export default class Watcher {
   run() {
     // 真正触发更新
     this.get()
+
+    if(this.user) {
+
+    } else {
+      // 渲染watcher
+      this.cb.call(this.vm)
+    }
   }
 }

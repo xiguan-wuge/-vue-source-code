@@ -18,6 +18,17 @@
   <script src="/dist/vue.js"></script>
   
   <script>
+    Vue.mixin({
+      created() {
+        console.log('全局created')
+      },
+      mounted() {
+        console.log('全局mounted')
+      },
+      beforeUpdate() {
+        console.log('全局beforeUpdate')
+      },
+    })
     const vm = new Vue({
       el: '#app',
       data() {
@@ -31,6 +42,15 @@
         }
       },
       template: `<div class="font-red">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
+      created() {
+        console.log('实例created')
+      },
+      mounted() {
+        console.log('实例mounted')
+      },
+      beforeUpdate() {
+        console.log('实例beforeUpdate')
+      },
     })
     console.log('vm', vm)
     // setTimeout(() => {
