@@ -21,16 +21,18 @@ export function lifecycleMixin(Vue) {
   // 虚拟dom转化成真实dom的核心 =》 _update
   Vue.prototype._update = function(vnode) {
     const vm = this 
-    patch(vm.$el, vnode)
-    // const prevNode = vm._vnode
-    // vm._vnode = vnode
-    // if(!prevNode) {
-    //   // 初次渲染
-    //   patch(vm.$el, vnode)
-    // } else {
-    //   // 更新渲染
-    //   patch(prevNode, vnode)
-    // }
+    // patch(vm.$el, vnode)
+    const prevNode = vm._vnode // 保留上一次的vnode
+    vm._vnode = vnode
+
+    if(!prevNode) {
+      // 初次渲染
+      patch(vm.$el, vnode)
+    } else {
+      // 更新渲染
+      // 上一次的vnode和这次的vnode 进行diff算法
+      patch(prevNode, vnode)
+    }
     
   }
 }
