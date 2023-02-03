@@ -1,5 +1,5 @@
 import {pushTarget, popTarget} from './dep'
-
+import {queueWatcher} from './scheduler'
 // 全局变量ID，每次new Watcher 都会自增
 let id = 0;
 
@@ -38,6 +38,14 @@ export default class Watcher {
   }
   // watcher更新
   update() {
+    // this.get()
+
+    // 每次watcher进行更新时，先缓存起来，之后一起更新
+    // 异步队列机制
+    queueWatcher(this)
+  }
+  run() {
+    // 真正触发更新
     this.get()
   }
 }

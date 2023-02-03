@@ -1,15 +1,20 @@
 import Watcher from "./observer/watcher"
 import {patch} from './vdom/patch'
 
+/**
+ * 组件实例花在到真实的el节点上
+ * @param {} vm 组件实例 
+ * @param {*} el 真实dom节点
+ */
 export function mountComponent(vm, el) {
-  // const updateComponent = () =>{
-  //   console.log('刷新页面')
-  //   // vm._update(vm._render())
-  // }
-  // new Watcher(vm, updateComponent, null, true)
-
+  // 真实的el赋值给$el
   vm.$el = el
-  vm._update(vm._render())
+
+  const updateComponent = () =>{
+    console.log('刷新页面')
+    vm._update(vm._render())
+  }
+  new Watcher(vm, updateComponent, null, true)
 }
 
 export function lifecycleMixin(Vue) {
@@ -17,5 +22,15 @@ export function lifecycleMixin(Vue) {
   Vue.prototype._update = function(vnode) {
     const vm = this 
     patch(vm.$el, vnode)
+    // const prevNode = vm._vnode
+    // vm._vnode = vnode
+    // if(!prevNode) {
+    //   // 初次渲染
+    //   patch(vm.$el, vnode)
+    // } else {
+    //   // 更新渲染
+    //   patch(prevNode, vnode)
+    // }
+    
   }
 }

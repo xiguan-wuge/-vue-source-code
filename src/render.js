@@ -1,6 +1,7 @@
 // render 函数转换成虚拟DOM的核心方法 _render
 
 import {createElement, createTextNode} from './vdom/index'
+import { nextTick } from './util/next-tick'
 
 export function renderMixin(Vue) {
   Vue.prototype._render = function() {
@@ -30,4 +31,6 @@ export function renderMixin(Vue) {
       ? JSON.stringify(val)
       : val
   }
+
+  Vue.prototype.$nextTick = nextTick
 }

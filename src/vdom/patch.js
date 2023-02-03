@@ -5,19 +5,34 @@ export function patch(oldVnode, vnode) {
   const isRealElement = oldVnode.nodeType
   if(isRealElement) {
     // 初次渲染
+
+    
     const oldElm = oldVnode
+
+    
     const parentElm = oldVnode.parentNode
 
     // 将vnode转化成真实的DOM节点
     const el = createElm(vnode)
 
+    // 问题：
+    // （1）首次渲染后，oldVnode 中 parentNode和nextSibling 为null？？？ 待解决
+    // （2） 参照现有Vue项目，实际内容应该是包含在div#app内，不是替换div#app
+    oldVnode.innerHTML = ''
+    oldVnode.appendChild(el)
+    
+
     // 插入到老节点的前面，并删除老节点，以保证替换位置不变
-    parentElm.insertBefore(el, oldElm.nextSibling)
-    parentElm.removeChild(oldElm)
+    // parentElm.insertBefore(el, oldElm.nextSibling || document.querySelector('#app'))
+    // parentElm.removeChild(oldVnode)
+
+    
+    // parentElm.appendChild(el)
 
     return el
   } else {
     // 渲染更新
+    console.log('渲染更新')
   }
 }
 
