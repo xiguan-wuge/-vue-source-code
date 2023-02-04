@@ -4,11 +4,6 @@ import {compilerToFunction} from './compiler/index'
 import { mergeOptions } from './util/index'
 
 export function initMixins(Vue){
-  Vue.mixin = function (mixin) {
-    Vue.options = {}
-    //   合并对象
-    this.options=mergeOptions(this.options,mixin)
-  }
   Vue.prototype._init = function(options) {
     const vm = this // this代表实例对象， 后续调用_init
     // vm.$options = options

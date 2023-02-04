@@ -15,7 +15,7 @@ export function renderMixin(Vue) {
   // render 函数中有 _c, _v, _s 方法需要定义
   Vue.prototype._c = function(...args) {
     // 创建虚拟DOM元素
-    return createElement(...args)
+    return createElement(this, ...args)
   }
 
   Vue.prototype._v = function(...args) {

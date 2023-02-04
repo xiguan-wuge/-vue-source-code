@@ -18,17 +18,24 @@
   <script src="/dist/vue.js"></script>
   
   <script>
-    Vue.mixin({
-      created() {
-        console.log('全局created')
-      },
-      mounted() {
-        console.log('全局mounted')
-      },
-      beforeUpdate() {
-        console.log('全局beforeUpdate')
-      },
-    })
+    // 注册全局mixin
+    // Vue.mixin({
+    //   created() {
+    //     console.log('全局created')
+    //   },
+    //   mounted() {
+    //     console.log('全局mounted')
+    //   },
+    //   beforeUpdate() {
+    //     console.log('全局beforeUpdate')
+    //   },
+    // })
+
+    // 注册全局组件
+    // Vue.component('parent-component', {
+    //   template: '<div>我是全局组件</div>'
+    // })
+    console.log('new Vue')
     const vm = new Vue({
       el: '#app',
       data() {
@@ -41,16 +48,33 @@
           arr: ['1', '2']
         }
       },
+      // template: `<div class="font-red">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
+      // <child-component></child-component>
+      // <parent-component></parent-component>
+
+
       template: `<div class="font-red">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
+      // 局部组件
+      // components: {
+      //   'child-component': {
+      //     template: '<div class="child-comp">我是局部组件</div>',
+      //     created() {
+      //       console.log('局部组件created()')
+      //     },
+      //     mounted() {
+      //       console.log('局部组件mounted()')
+      //     },
+      //   }
+      // },
       created() {
         console.log('实例created')
       },
       mounted() {
         console.log('实例mounted')
       },
-      beforeUpdate() {
-        console.log('实例beforeUpdate')
-      },
+      // beforeUpdate() {
+      //   console.log('实例beforeUpdate')
+      // },
     })
     console.log('vm', vm)
     // setTimeout(() => {

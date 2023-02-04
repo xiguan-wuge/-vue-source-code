@@ -1,6 +1,7 @@
 import {initMixins} from './init.js'
 import {lifecycleMixin} from './lifecycle'
 import {renderMixin} from './render'
+import {initGlobalAPi} from './global-api/index'
 
 function Vue(options) {
   console.log('this is Vue Constructor')
@@ -12,4 +13,6 @@ function Vue(options) {
 initMixins(Vue)
 renderMixin(Vue)
 lifecycleMixin(Vue)
+initGlobalAPi(Vue)
+
 export default Vue
