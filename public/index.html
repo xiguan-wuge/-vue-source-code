@@ -9,6 +9,9 @@
     .font-red {
       color: red;
     }
+    .font-black {
+      color: black;
+    }
   </style>
 </head>
 <body>
@@ -48,12 +51,27 @@
           arr: ['1', '2']
         }
       },
+      watch: {
+        a(val, oldVal) {
+          console.log('a - watch  ', val)
+        }
+        // a: {
+        //   handler(val, oldVal) {
+        //     console.log('a-watcher', val)
+        //   },
+        //   immediate:true
+        // }
+      },
       // template: `<div class="font-red">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
       // <child-component></child-component>
       // <parent-component></parent-component>
 
 
-      template: `<div class="font-red">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
+      template: `<div class="font-red">
+        hello 这是我自己写的Vue{{a}}-{{b}}
+        <br></br>
+        <span class="font-black">这是span{{a}}</span>
+      </div>`,
       // 局部组件
       // components: {
       //   'child-component': {
@@ -85,9 +103,9 @@
       console.log('5000')
 
       vm.a = 11
-      vm.a = 11111
-      vm.obj.name = 'lisi'
-      vm.arr.reverse()
+      // vm.a = 11111
+      // vm.obj.name = 'lisi'
+      // vm.arr.reverse()
     }, 5000)
   </script>
   

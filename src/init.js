@@ -2,6 +2,8 @@ import {initState} from './state'
 import { callHook, mountComponent } from './lifecycle'
 import {compilerToFunction} from './compiler/index'
 import { mergeOptions } from './util/index'
+import Watcher from './observer/watcher'
+import {pushTarget, popTarget} from './observer/dep'
 
 export function initMixins(Vue){
   Vue.prototype._init = function(options) {
@@ -45,4 +47,26 @@ export function initMixins(Vue){
     // 将当前组件实例挂在到真实的el节点上
     return mountComponent(vm, el)
   }
+
+  Vue.prototype.$watch = function(exprOrFn, cb, options) {
+    const vm = this
+    // use:true ,代表这是用户watcher
+    const watcher = new Watcher(vm, exprOrFn, cb, {...options, user: true})
+    // 立即执行函数，将watcher.value 传入
+    if(options.immediate) {
+      pushTarget()
+      invokeWithErrorHandling(cb, vm, [watcher.value])
+      popTarget()
+    }
+  }
+}
+
+function invokeWithErrorHandling(handler, context, args) {
+  let res
+   try {
+    res = args ? handler.apply(context, args) : handler.call(context)
+   } catch (error) {
+     console.log('invokeWithErrorHandling-err', error)
+   }
+   return res
 }

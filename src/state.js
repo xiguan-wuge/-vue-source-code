@@ -53,3 +53,36 @@ function proxy(object, sourceKey, key) {
     }
   })
 }
+
+// 初始化watch
+function initWatch(vm) {
+  const watch = vm.$options.watch
+  for(const k in watch) {
+    // 用户自定义watch的写法，可能是数组、对象、函数、字符串
+    const handler = watch[k] 
+    if(Array.isArray(handler)) {
+      handler.forEach(handle => {
+        createWatcher(vm, k, handle)
+      })
+    } else {
+      createWatcher(vm, k, handler)
+    }
+  }
+}
+
+// 创建watcher的核心
+function createWatcher(vm, exprOrFn, handler, options = {}) {
+  if(typeof handler === 'object') {
+    options = handler
+    handler = handler.handler // 用户传入的函数
+  } else if(typeof handler === 'string') {
+    // 代表传入的是 用户定义好的methods方法
+    handler = vm[handler]
+  } else {
+    console.log('createWatcher-else')
+    // 普通函数，类似于依赖被收集到dep中，在数据更新时，触发函数执行，所以，没有额外处理
+  }
+  // 。。。
+  // 调用vm.$watch 创建用户 watcher 
+  return vm.$watch(exprOrFn, handler, options)
+}
