@@ -51,17 +51,27 @@
           arr: ['1', '2']
         }
       },
-      watch: {
-        a(val, oldVal) {
-          console.log('a - watch  ', val)
+      computed: {
+        sum() {
+          console.log('sum-a,b', this.a, this.b,this)
+          return `${this.a} + ${this.b}`
+        },
+        dValue() {
+          return this.a - this.b
         }
-        // a: {
-        //   handler(val, oldVal) {
-        //     console.log('a-watcher', val)
-        //   },
-        //   immediate:true
-        // }
+
       },
+      // watch: {
+      //   a(val, oldVal) {
+      //     console.log('a - watch  ', val)
+      //   }
+      //   // a: {
+      //   //   handler(val, oldVal) {
+      //   //     console.log('a-watcher', val)
+      //   //   },
+      //   //   immediate:true
+      //   // }
+      // },
       // template: `<div class="font-red">hello 这是我自己写的Vue{{a}}-{{b}}</div>`,
       // <child-component></child-component>
       // <parent-component></parent-component>
@@ -71,6 +81,8 @@
         hello 这是我自己写的Vue{{a}}-{{b}}
         <br></br>
         <span class="font-black">这是span{{a}}</span>
+        <br></br>
+        <span>这是计算属性{{sum}}---{{dValue}}</span>
       </div>`,
       // 局部组件
       // components: {

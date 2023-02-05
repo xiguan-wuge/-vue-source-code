@@ -1,4 +1,6 @@
+import Watcher from './observer/watcher.js'
 import {observe} from './observer/index.js'
+import Dep from './observer/dep.js'
 
 export function initState(vm) {
   // 获取传入的数据对象
@@ -85,4 +87,60 @@ function createWatcher(vm, exprOrFn, handler, options = {}) {
   // 。。。
   // 调用vm.$watch 创建用户 watcher 
   return vm.$watch(exprOrFn, handler, options)
+}
+
+// computed 初始化
+function initComputed(vm) {
+  const computed = vm.$options.computed
+
+  // 存放计算watcher,添加到vm中
+  const watcher = (vm._computedWatchrs = {})
+
+  for(let k in computed) {
+    const userDef = computed[k]
+    const getter = typeof userDef === 'function' ? userDef : userDef.get
+
+    // 创建计算watcher lazy=true
+    watcher[k] = new Watcher(vm, getter, ()=>{}, {lazy: true} )
+    defineComputed(vm, k, userDef)
+  }
+}
+
+// 重新定义计算属性，对get和set做劫持
+function defineComputed(target, key, userDef) {
+  if(typeof userDef === 'function') {
+    // 手动赋值到get上
+    sharedPropertyDefinition.get = createComputedGetter(key)
+  } else {
+    sharedPropertyDefinition.get = createComputedGetter(key)
+    sharedPropertyDefinition.set = userDef.set
+  }
+
+  // 劫持
+  Object.defineProperty(target, key, sharedPropertyDefinition)
+}
+
+// 定义普通对象，用来劫持计算属性
+const sharedPropertyDefinition = {
+  enumerable: true,
+  configrable: true,
+  get: () => {},
+  set: () => {}
+}
+
+// 重写计算属性的get方法，判断是否需要进行重新计算
+function createComputedGetter(key) {
+  return function() {
+    const watcher = this._computedWatchrs[key]
+    if(watcher) {
+      // 计算属性取值时，若是脏值，需要重新求值
+      if(watcher.dirty) watcher.evaluate()
+
+      if(Dep.target) {
+        // 如果Dep还存在targe, 此时一般为渲染watcher，计算属性依赖的数据也要收集
+        watcher.depend()
+      }
+    }
+    return watcher.value
+  }
 }
