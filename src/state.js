@@ -1,6 +1,7 @@
 import Watcher from './observer/watcher.js'
-import {observe} from './observer/index.js'
+import {observe, defineReactive} from './observer/index.js'
 import Dep from './observer/dep.js'
+import {isUpdatingChildComponent} from './lifecycle'
 
 export function initState(vm) {
   // 获取传入的数据对象
@@ -10,7 +11,7 @@ export function initState(vm) {
   // props => methods => data => computed => watch
 
   if(opt.props){
-    // initProps(vm)
+    initProps(vm)
   }
 
   if(opt.methods){
@@ -143,4 +144,46 @@ function createComputedGetter(key) {
     }
     return watcher.value
   }
+}
+
+// 初始化props
+function initProps(vm, propsOptions) {
+  const propsData = vm.$options.propsData || {}
+  const props = vm._props = {}
+  const keys = vm.$options._propsKeys = []
+  const isRoot = !vm.parent
+
+  if(isRoot) {
+    // 根节点的props需要转换下, 不观测数据
+    toggleObserving(false)
+  }
+  // 保留核心部分
+  for(const key in propsOptions) {
+    keys.push(key)
+    const value = validateProp(key, propsOptions, props, vm)
+
+    if(propcess.env.NODE_ENV !== 'production') {
+      // ...
+      defineReactive(props, key, value, () => {
+        if (!isRoot && !isUpdatingChildComponent) {
+          warn(
+            `Avoid mutating a prop directly since the value will be ` +
+            `overwritten whenever the parent component re-renders. ` +
+            `Instead, use a data or computed property based on the prop's ` +
+            `value. Prop being mutated: "${key}"`,
+            vm
+          )
+        }
+      })
+    } else {
+      defineReactive(props, key, value)
+    }
+    // 静态prop 已经通过Vue.extends方法中代理到组件原型中，
+    // 此处实例化时，仅需要代理到_props
+    if(!(key in vm)) {
+      proxy(vm, '_props', key)
+    }
+  }
+  toggleObserving(true)
+  
 }

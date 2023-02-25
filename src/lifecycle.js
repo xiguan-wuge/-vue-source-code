@@ -6,6 +6,9 @@ import {patch} from './vdom/patch'
  * @param {} vm 组件实例 
  * @param {*} el 真实dom节点
  */
+
+ export let isUpdatingChildComponent = false
+
 export function mountComponent(vm, el) {
   // 真实的el赋值给$el
   vm.$el = el

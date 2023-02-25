@@ -1,6 +1,14 @@
 import {arrayMethods} from './array'
 import Dep from './dep'
 
+// 在某些情况下，我们可能希望禁用组件内部的观察
+// 更新计算。
+
+export let shouldObserve = true
+export function toggleObserving(value) {
+  shouldObserve = value
+}
+
 class Observer {
   
   constructor(value) {
@@ -41,7 +49,7 @@ class Observer {
 }
 
 // Object.defineProperty 进行数据劫持的核心逻辑
-function defineReactive(data, key, val) {
+export function defineReactive(data, key, val) {
   const childObj = observe(val) // 递归 监测数据
   // 问题： 若data数据层级过深， 影响性能
 
